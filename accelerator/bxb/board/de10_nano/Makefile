@@ -19,7 +19,7 @@ bitstream: output_files/soc_system.rbf
 preloader: software/spl_bsp/preloader-mkpimage.bin
 
 bxb_ip/Bxb.v: $(CHISEL_FILES)
-	cd ../../ && sbt "runMain bxb.Bxb --output-file $(abspath $@)"
+	cd ../../ && sbt "runMain bxb.Bxb --target-dir $(dir $(abspath $@))"
 
 soc_system.qsys: soc_system.tcl bxb_ip/Bxb.v
 	qsys-script --search-path=bxb_ip/,$$ --script=soc_system.tcl
@@ -28,8 +28,8 @@ soc_system.done_stamp: soc_system.qsys bxb_ip/Bxb.v
 	qsys-generate $< --search-path=bxb_ip/,$$ --synthesis=VERILOG
 	touch soc_system.done_stamp
 
-output_files/DE10_NANO_SoC_GHRD.sof quartus.done_stamp: DE10_NANO_SoC_GHRD.qpf DE10_NANO_SoC_GHRD.qsf DE10_NANO_SoC_GHRD.v DE10_NANO_SOC_GHRD.sdc soc_system.done_stamp 
-	quartus_sh --flow compile DE10_NANO_SoC_GHRD.qpf
+output_files/DE10_NANO_SoC_GHRD.sof quartus.done_stamp: DE10_NANO_SoC_GHRD.qpf DE10_NANO_SoC_GHRD.qsf DE10_NANO_SoC_GHRD.v DE10_NANO_SOC_GHRD.sdc soc_system.done_stamp
+	quartus_sh --flow compile DE10_NANO_SoC_GHRD.qpf 2>&1 | tee quartus_sh.compile.log
 	touch quartus.done_stamp
 
 output_files/soc_system.rbf: output_files/DE10_NANO_SoC_GHRD.sof
@@ -41,7 +41,7 @@ software/spl_bsp/preloader-mkpimage.bin: quartus.done_stamp
 
 .PHONY: clean
 clean:
-	rm -rf bxb_ip/Bxb.v
+	rm -rf bxb_ip/Bxb.v bxb_ip/BRam.v
 	rm -rf c5_pin_model_dump.txt
 	rm -rf db incremental_db/
 	rm -rf output_files
