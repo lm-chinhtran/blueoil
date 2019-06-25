@@ -40,6 +40,7 @@ set_fileset_property QUARTUS_SYNTH TOP_LEVEL Bxb
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE false
 add_fileset_file Bxb.v VERILOG PATH Bxb.v TOP_LEVEL_FILE
+add_fileset_file BRam.v VERILOG PATH BRam.v
 
 
 # 
